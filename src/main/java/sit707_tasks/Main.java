@@ -2,52 +2,28 @@ package sit707_tasks;
 
 import java.util.Random;
 
-/**
- * Hello world!
- * @author Ahsan Habib
- */
-public class Main 
-{
-    public static void main( String[] args )
-    {   
-    	/*
-    	 * January max boundary area: max-1, max+1
-    	 */
-    	System.out.println("January max: increment should go to February.");
-    	DateUtil date = new DateUtil(31, 1, 2024);
-        System.out.println(date);
+public class Main {
+    public static void main(String[] args) {
+        // 31-Jan-2024 23:59:59 date increase
+        System.out.println("Example with date and time increment from January 31, 2024, 23:59:59.");
+        DateUtil date = new DateUtil(31, 1, 2024, 23, 59, 59);
+        System.out.println("Before increment: " + date);
         date.increment();
-        System.out.println(date);
-        
-        System.out.println("January max: decrement should be 30 January.");
-    	date = new DateUtil(31, 1, 2024);
-        System.out.println(date);
+        System.out.println("After increment: " + date);
+
+        // 1-Jan-2024 00:00:00 date decrease
+        System.out.println("\nExample with date and time decrement from January 1, 2024, 00:00:00.");
+        date = new DateUtil(1, 1, 2024, 0, 0, 0);
+        System.out.println("Before decrement: " + date);
         date.decrement();
-        System.out.println(date);
-        
-        /*
-         * January nominal (somewhere between min and max)
-         */
-        System.out.println("January random day between (1, 31): increment should be 1 day next.");
-        int rand_day_1_to_31 = 1 + new Random().nextInt(31);
-        date = new DateUtil(rand_day_1_to_31, 1, 2024);
-        System.out.println(date);
+        System.out.println("After decrement: " + date);
+
+        // random date
+        System.out.println("\nExample with random day in January 2024 and time increment.");
+        int randDay = 1 + new Random().nextInt(31); // Random day between 1 and 31
+        date = new DateUtil(randDay, 1, 2024, 12, 30, 30);
+        System.out.println("Before increment: " + date);
         date.increment();
-        System.out.println(date);
-        
-        /*
-         * January min boundary area: min+1, min-1
-         */
-        System.out.println("January min: increment should be 2nd January.");
-    	date = new DateUtil(1, 1, 2024);
-        System.out.println(date);
-        date.increment();
-        System.out.println(date);
-        
-        System.out.println("January min: decrement should be 31 December previous year.");
-        date = new DateUtil(1, 1, 2024);
-        System.out.println(date);
-        date.decrement();
-        System.out.println(date);        
+        System.out.println("After increment: " + date);
     }
 }

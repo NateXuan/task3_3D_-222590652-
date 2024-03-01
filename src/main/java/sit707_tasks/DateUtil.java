@@ -1,8 +1,6 @@
 package sit707_tasks;
 
-/**
- * @author Ahsan Habib
- */
+
 public class DateUtil {
 
 	// Months in order 0-11 maps to January-December.
@@ -11,25 +9,26 @@ public class DateUtil {
 			"July", "August", "September", "October", "November", "December"
 	};
 	
-	private int day, month, year;
+	private int day, month, year, hour, minute, second;
 	
-	/*
-	 * Constructs object from given day, month and year.
-	 */
-	public DateUtil(int day, int month, int year) {
-		// Is supplied day/month/year a valid date?
-		if (day < 1 || day > 31)
-			throw new RuntimeException("Invalid day: " + day + ", expected range 1-31");
-		if (month < 1 || month > 12)
-			throw new RuntimeException("Invalid month: " + month + ", expected range 1-12");
-		if (year < 1700 || year > 2024)
-			throw new RuntimeException("Invalid year: " + year + ", expected range 1700-2024");
-		if (day > monthDuration(month, year))
-			throw new RuntimeException("Invalid day: " + day + ", max day: " + monthDuration(month, year));
-		this.day = day;
-		this.month = month;
-		this.year = year;
-	}
+
+	public DateUtil(int day, int month, int year, int hour, int minute, int second) {
+        if (day < 1 || day > 31) throw new RuntimeException("Invalid day: " + day);
+        if (month < 1 || month > 12) throw new RuntimeException("Invalid month: " + month);
+        if (year < 1700 || year > 2024) throw new RuntimeException("Invalid year: " + year);
+        if (day > monthDuration(month, year)) throw new RuntimeException("Invalid day: " + day);
+        
+        if (hour < 0 || hour > 23) throw new RuntimeException("Invalid hour: " + hour);
+        if (minute < 0 || minute > 59) throw new RuntimeException("Invalid minute: " + minute);
+        if (second < 0 || second > 59) throw new RuntimeException("Invalid second: " + second);
+        
+        this.day = day;
+        this.month = month;
+        this.year = year;
+        this.hour = hour;
+        this.minute = minute;
+        this.second = second;
+    }
 
 	public int getDay() {
 		return day;
@@ -43,47 +42,77 @@ public class DateUtil {
 		return year;
 	}
 	
-	/**
-	 * Increment one day.
-	 */
+	public int getHour() {
+		return hour;
+	}
+	
+	public int getMinute() {
+		return minute;
+	}
+	
+	public int getSecond() {
+		return second;
+	}
+	
+
 	public void increment() {
-		if (day < monthDuration(month, year)) {
-			// At least 1 day remaining in current month of year.
-			day++;
-		} else if (month < 12) {
-			// Last day of a month AND month is less than December, so +1d is first day of next month.
-			day = 1;
-			month++;
-		} else {
-			// Month is December, so +1d is 1st January next year.
-			day = 1;
-			month = 1;
-			year++;
-		}
-	}
+        second++;
+        if (second > 59) {
+            second = 0;
+            minute++;
+            if (minute > 59) {
+                minute = 0;
+                hour++;
+                if (hour > 23) {
+                    hour = 0;
+                    incrementDate();
+                }
+            }
+        }
+    }
 	
-	/**
-	 * Decrement one day from current date.
-	 */
 	public void decrement() {
-		if (day > 1) {
-			day--;
-		} else if (month > 1) {
-			month--;
-			day = monthDuration(month, year);
-		} else {
-			month = 12;
-			year--;
-			day = monthDuration(month, year);
-		}
-	}
+        second--;
+        if (second < 0) {
+            second = 59;
+            minute--;
+            if (minute < 0) {
+                minute = 59;
+                hour--;
+                if (hour < 0) {
+                    hour = 23;
+                    decrementDate();
+                }
+            }
+        }
+    }
 	
-	/**
-	 * Calculate duration of current month of year.
-	 * @param month
-	 * @param year
-	 * @return
-	 */
+	private void incrementDate() {
+        if (day < monthDuration(month, year)) {
+            day++;
+        } else if (month < 12) {
+            day = 1;
+            month++;
+        } else {
+            day = 1;
+            month = 1;
+            year++;
+        }
+    }
+	
+	private void decrementDate() {
+        if (day > 1) {
+            day--;
+        } else if (month > 1) {
+            month--;
+            day = monthDuration(month, year);
+        } else {
+            month = 12;
+            year--;
+            day = monthDuration(month, year);
+        }
+    }
+	
 	public static int monthDuration(int month, int year) {		
 		if (month == 2 && year % 4 == 0) {
 			// February leap year?
@@ -99,11 +128,9 @@ public class DateUtil {
 		return 31;  // rest are 31 days' months.
 	}
 	
-	/**
-	 * User friendly output.
-	 */
+
 	public String toString() {
-		return day + " " + MONTHS[month - 1] + " " + year;
-	}
+        return String.format("%02d %s %d %02d:%02d:%02d", day, MONTHS[month - 1], year, hour, minute, second);
+    }
 	
 }
